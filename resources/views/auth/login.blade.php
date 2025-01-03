@@ -12,10 +12,11 @@
     <div class="flex justify-center items-center min-h-screen">
         <div class="bg-white p-8 rounded-lg shadow-lg w-96">
             @if (session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
+                <div class="bg-green-500 text-white p-4 rounded-md shadow-md mb-4">
+                    <strong>Success:</strong> {{ session('success') }}
                 </div>
             @endif
+
 
             <h2 class="text-2xl font-bold mb-4 text-center">Login to Your Account</h2>
 

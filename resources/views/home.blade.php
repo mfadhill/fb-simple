@@ -19,11 +19,17 @@
                 <a href="{{ route('posts.index') }}" class="text-white hover:text-gray-300">Show Blogs</a>
 
                 @auth
-                    <span class="text-white">Hi, {{ Auth::user()->name }}</span>
-                    <form action="{{ route('logout') }}" method="POST" class="inline">
-                        @csrf
-                        <button type="submit" class="text-white hover:text-gray-300">Logout</button>
-                    </form>
+                    <div class="flex justify-end items-center">
+                        <span class="text-white cursor-pointer" id="user-name" onclick="toggleLogout()">Hi,
+                            {{ Auth::user()->name }}</span>
+
+                        <div id="logout-form" class="hidden ml-4">
+                            <form action="{{ route('logout') }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit" class="text-white hover:text-gray-300">Logout</button>
+                            </form>
+                        </div>
+                    </div>
                 @else
                     <a href="{{ route('login') }}" class="text-white hover:text-gray-300">Login</a>
                     <a href="{{ route('register') }}" class="text-white hover:text-gray-300">Register</a>
@@ -36,5 +42,11 @@
         @yield('content')
     </div>
 </body>
+<script>
+    function toggleLogout() {
+        var logoutForm = document.getElementById('logout-form');
+        logoutForm.classList.toggle('hidden');
+    }
+</script>
 
 </html>

@@ -19,29 +19,45 @@
                         <strong class="text-blue-400">{{ $comment->user->name }}</strong>: {{ $comment->comment }}
                     </p>
 
-                    <!-- Tombol Hapus Komentar -->
-                    <form action="{{ route('comments.destroy', $comment->id) }}" method="POST" class="inline-block">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="text-red-500 hover:text-red-700">Delete</button>
-                    </form>
+                    <!-- Tombol Hapus Komentar, hanya tampil jika pengguna yang login adalah pemilik atau admin -->
+                    @if (auth()->id() === $comment->user_id || auth()->user()->is_admin)
+                        <form action="{{ route('comments.destroy', $comment->id) }}" method="POST" class="inline-block">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-red-500 hover:text-red-700">Delete</button>
+                        </form>
+                    @endif
 
-                    <!-- Replies -->
+                    <!-- Balasan -->
                     @foreach ($comment->replies as $reply)
                         <div class="ml-4 mt-2 p-2 rounded-lg bg-gray-600">
                             <p><strong class="text-blue-400">{{ $reply->user->name }}</strong>: {{ $reply->comment }}</p>
 
-                            <!-- Tombol Hapus Balasan -->
-                            <form action="{{ route('comments.destroy', $reply->id) }}" method="POST" class="inline-block">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-500 hover:text-red-700">Delete</button>
-                            </form>
+                            <!-- Tombol Hapus Balasan, hanya tampil jika pengguna yang login adalah pemilik atau admin -->
+                            @if (auth()->id() === $reply->user_id || auth()->user()->is_admin)
+                                <form action="{{ route('comments.destroy', $reply->id) }}" method="POST"
+                                    class="inline-block">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-500 hover:text-red-700">Delete</button>
+                                </form>
+                            @endif
                         </div>
                     @endforeach
+
+                    <!-- Form Reply -->
+                    <form action="{{ route('comments.reply') }}" method="POST" class="mt-4">
+                        @csrf
+                        <input type="hidden" name="post_id" value="{{ $post->id }}">
+                        <input type="hidden" name="parent_id" value="{{ $comment->id }}">
+                        <textarea name="comment" placeholder="Add a reply..."
+                            class="w-full p-3 rounded bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                        <button type="submit"
+                            class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 mt-4 rounded transition">Submit
+                            Reply</button>
+                    </form>
                 </div>
             @endforeach
-
         </div>
 
         <!-- Comment Form -->

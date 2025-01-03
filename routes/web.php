@@ -18,7 +18,12 @@ Route::get('/posts/create', [PostController::class, 'create'])->name('posts.crea
 Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
 Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
 Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
+// Route::post('/posts/{post}/like', [PostController::class, 'like'])->name('posts.like');
+// Route::post('/posts/{postId}/like', [PostController::class, 'like'])->name('posts.like');
+
+Route::post('/posts/{postId}', [PostController::class, 'like'])->name('like');
 
 
 Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
 Route::post('/comments/reply', [CommentController::class, 'reply'])->name('comments.reply');
+Route::delete('/comments/{id}', [CommentController::class, 'destroy'])->name('comments.destroy');

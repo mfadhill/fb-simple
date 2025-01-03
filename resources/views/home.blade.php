@@ -12,7 +12,7 @@
 <body class="bg-gray-100">
     <nav class="bg-indigo-600 p-4 text-white">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <a href="{{ route('posts.index') }}" class="text-xl font-semibold">Home</a>
+            <a href="{{ route('posts.index') }}" class="text-xl font-semibold">Blog</a>
 
             <div class="space-x-4 flex items-center">
                 <a href="{{ route('posts.create') }}" class="text-white hover:text-gray-300">Post Blog</a>

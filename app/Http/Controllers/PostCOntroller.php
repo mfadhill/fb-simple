@@ -23,6 +23,11 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
+        // Pastikan pengguna sudah login
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'You must be logged in.');
+        }
+
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
@@ -31,11 +36,14 @@ class PostController extends Controller
 
         $imagePath = $request->file('image')->store('images', 'public');
 
+        // Ambil ID pengguna yang sedang login
+        $userId = auth()->id();
+
         Post::create([
             'title' => $request->title,
             'content' => $request->content,
             'image' => $imagePath,
-            'user_id' => auth()->id(),
+            'user_id' => $userId, // Isi dengan user_id yang valid
         ]);
 
         return redirect()->route('posts.index')->with('success', 'Post created successfully.');
@@ -46,9 +54,42 @@ class PostController extends Controller
         return view('posts.show', compact('post'));
     }
 
+    public function like($postId)
+    {
+        $post = Post::find($postId);
+
+        if (!$post) {
+            return response()->json(['error' => 'Post not found'], 404);
+        }
+
+        $user = auth()->user();
+
+        if (!$user) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
+
+        $existingLike = $post->likes()->where('user_id', $user->id)->first();
+
+        if ($existingLike) {
+            // Hapus like
+            $existingLike->delete();
+            return response()->json([
+                'status' => 'unliked',
+                'likes_count' => $post->likes()->count()
+            ]);
+        } else {
+            // Tambahkan like
+            $post->likes()->create(['user_id' => $user->id]);
+            return response()->json([
+                'status' => 'liked',
+                'likes_count' => $post->likes()->count()
+            ]);
+        }
+    }
+
+
     public function destroy(Post $post)
     {
-        // Hapus gambar jika ada
         if ($post->image) {
             Storage::delete('public/' . $post->image);
         }

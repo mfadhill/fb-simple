@@ -23,7 +23,6 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
-        // Pastikan pengguna sudah login
         if (!Auth::check()) {
             return redirect()->route('login')->with('error', 'You must be logged in.');
         }
@@ -31,19 +30,18 @@ class PostController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi untuk gambar
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $imagePath = $request->file('image')->store('images', 'public');
 
-        // Ambil ID pengguna yang sedang login
         $userId = auth()->id();
 
         Post::create([
             'title' => $request->title,
             'content' => $request->content,
             'image' => $imagePath,
-            'user_id' => $userId, // Isi dengan user_id yang valid
+            'user_id' => $userId,
         ]);
 
         return redirect()->route('posts.index')->with('success', 'Post created successfully.');
@@ -71,14 +69,12 @@ class PostController extends Controller
         $existingLike = $post->likes()->where('user_id', $user->id)->first();
 
         if ($existingLike) {
-            // Hapus like
             $existingLike->delete();
             return response()->json([
                 'status' => 'unliked',
                 'likes_count' => $post->likes()->count()
             ]);
         } else {
-            // Tambahkan like
             $post->likes()->create(['user_id' => $user->id]);
             return response()->json([
                 'status' => 'liked',

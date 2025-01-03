@@ -19,7 +19,6 @@
                         <strong class="text-blue-400">{{ $comment->user->name }}</strong>: {{ $comment->comment }}
                     </p>
 
-                    <!-- Tombol Hapus Komentar, hanya tampil jika pengguna yang login adalah pemilik atau admin -->
                     @if (auth()->id() === $comment->user_id || auth()->user()->is_admin)
                         <form action="{{ route('comments.destroy', $comment->id) }}" method="POST" class="inline-block">
                             @csrf
@@ -33,7 +32,6 @@
                         <div class="ml-4 mt-2 p-2 rounded-lg bg-gray-600">
                             <p><strong class="text-blue-400">{{ $reply->user->name }}</strong>: {{ $reply->comment }}</p>
 
-                            <!-- Tombol Hapus Balasan, hanya tampil jika pengguna yang login adalah pemilik atau admin -->
                             @if (auth()->id() === $reply->user_id || auth()->user()->is_admin)
                                 <form action="{{ route('comments.destroy', $reply->id) }}" method="POST"
                                     class="inline-block">
